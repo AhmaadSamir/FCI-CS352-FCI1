@@ -65,6 +65,18 @@ public class Service {
 	public String registrationService(@FormParam("uname") String uname,
 			@FormParam("email") String email, @FormParam("password") String pass) {
 		UserEntity user = new UserEntity(uname, email, pass);
+		
+		
+		/// user email found 
+		if(user.userEmailFound(email)){
+			
+			JSONObject object = new JSONObject();
+			object.put("Status", "Failed");
+			return object.toString();
+			
+		}
+		
+		//save user now
 		user.saveUser();
 		JSONObject object = new JSONObject();
 		object.put("Status", "OK");
@@ -74,16 +86,16 @@ public class Service {
 	/**
 	 * Login Rest Service, this service will be called to make login process
 	 * also will check user data and returns new user from datastore
-	 * @param uname provided user name
+	 * @param email provided user email
 	 * @param pass provided user password
 	 * @return user in json format
 	 */
 	@POST
 	@Path("/LoginService")
-	public String loginService(@FormParam("uname") String uname,
+	public String loginService(@FormParam("email") String email,
 			@FormParam("password") String pass) {
 		JSONObject object = new JSONObject();
-		UserEntity user = UserEntity.getUser(uname, pass);
+		UserEntity user = UserEntity.getUser(email, pass);
 		if (user == null) {
 			object.put("Status", "Failed");
 
@@ -97,5 +109,80 @@ public class Service {
 		return object.toString();
 
 	}
+	
+	
+	/**
+	 * sendFriendRequest Rest Service, this service will be called to make friend request process
+	 * also will check if two friends are friends or not 
+	 * @param senderEmail
+	 * @param recevierEmail
+	 * @return user in json format
+	 */
+	@POST
+	@Path("/SendFriendRequest")
+	public String sendFriendRequest(@FormParam("senderEmail") String senderEmail,
+			@FormParam("recevierEmail") String recevierEmail) {
+		
+		
+		UserEntity user = new UserEntity();
+		JSONObject object = new JSONObject();
+		
+		///check if requered email is the user email
+		if(senderEmail.equals(recevierEmail)){
+			String requestResponse = "Request denied as you can`t add yourself ."; 
+			object.put("requestResponse", requestResponse);
+			return object.toString() ;
+		}
+		
+		if(!user.userEmailFound(recevierEmail) ){
+			String requestResponse = "Request denied as this user not found ."; 
+			object.put("requestResponse", requestResponse);
+			return object.toString() ;
+		}
+		
+		/// check if they are friends 
+		if( user.isFriends( senderEmail ,  recevierEmail) ){
+			String requestResponse = "Request denied as you are actually friends"; 
+			object.put("requestResponse", requestResponse);
+			return object.toString() ;
+		}
+		
+		
+		/// put them in table friends with status = NO
+		user.addFriendRequest(senderEmail,recevierEmail);
+		
+		String requestResponse = "Request has been sent successfully ya user ya 7abibi ^__^ :D "; 
+		object.put("requestResponse", requestResponse);
+
+		return object.toString();
+
+	}
+	
+	/**
+	 * AddAllFriendRequests this method add all users those want to be 
+	 * friends with this user 
+	 * 
+	 * @return user in json format
+	 */
+	@POST
+	@Path("/addAllFriendRequests")
+	public String addAllFriendRequests( @FormParam("recevierEmail") String recevierEmail) {
+		
+		JSONObject object = new JSONObject();
+		object.put("requestResponse", "Failed");
+		UserEntity user = new UserEntity();
+		user.setEmail(recevierEmail);
+		if ( user.addAllFriendRequests()){
+			
+			String requestResponse = "All users those sent you request became friends with you now\n"
+					+ " congrats ya user ya zeft 7abibi :D \n "
+					+ "in-shaa-el-Allah el phase gaya ha5alek te5tar el sadek ely enta bet7ebo  :DxD "; 
+			object.put("requestResponse", requestResponse);
+		}
+		
+		return object.toString();
+
+	}
+
 
 }

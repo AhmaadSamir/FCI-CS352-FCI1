@@ -26,6 +26,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.FCI.SWE.Models.UserEntity;
+import com.google.apphosting.utils.config.ClientDeployYamlMaker.Request;
 
 /**
  * This class contains REST services, also contains action function for web
@@ -93,7 +94,7 @@ public class UserController {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String response(@FormParam("uname") String uname,
 			@FormParam("email") String email, @FormParam("password") String pass) {
-		String serviceUrl = "http://fci-swe-apps.appspot.com/rest/RegistrationService";
+		String serviceUrl = "http://localhost:8888/rest/RegistrationService";
 		try {
 			URL url = new URL(serviceUrl);
 			String urlParameters = "uname=" + uname + "&email=" + email
@@ -140,7 +141,7 @@ public class UserController {
 		 * UserEntity user = new UserEntity(uname, email, pass);
 		 * user.saveUser(); return uname;
 		 */
-		return "Failed";
+		return "Failed as this email is exist";
 	}
 
 	/**
@@ -157,14 +158,13 @@ public class UserController {
 	@POST
 	@Path("/home")
 	@Produces("text/html")
-	public Response home(@FormParam("uname") String uname,
+	public Response home(@FormParam("email") String email,
 			@FormParam("password") String pass) {
-		String serviceUrl = "http://fci-swe-apps.appspot.com/rest/LoginService";
+		String serviceUrl = "http://localhost:8888/rest/LoginService";
 		try {
 			URL url = new URL(serviceUrl);
-			String urlParameters = "uname=" + uname + "&password=" + pass;
-			HttpURLConnection connection = (HttpURLConnection) url
-					.openConnection();
+			String urlParameters = "email=" + email + "&password=" + pass;
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
 			connection.setInstanceFollowRedirects(false);
@@ -214,6 +214,131 @@ public class UserController {
 		return null;
 
 	}
+	
+	/**
+	 * Action function to response to signup request, This function will act as
+	 * a controller part and it will calls RegistrationService to make
+	 * registration
+	 * 
+	 * @param uname
+	 *            provided user name
+	 * @param email
+	 *            provided user email
+	 * @param pass
+	 *            provided user password
+	 * @return Status string
+	 */
+	@POST
+	@Path("/SendFriendRequest")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String sendFriendRequest(@FormParam("senderEmail") String senderEmail,
+			@FormParam("recevierEmail") String recevierEmail) {
+		String serviceUrl = "http://localhost:8888/rest/SendFriendRequest";
+		try {
+			URL url = new URL(serviceUrl);
+			String urlParameters = "senderEmail=" + senderEmail + "&recevierEmail=" + recevierEmail;
+			HttpURLConnection connection = (HttpURLConnection) url
+					.openConnection();
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setInstanceFollowRedirects(false);
+			connection.setRequestMethod("POST");
+			connection.setConnectTimeout(60000);  //60 Seconds
+			connection.setReadTimeout(60000);  //60 Seconds
+			connection.setRequestProperty("Content-Type",
+					"application/x-www-form-urlencoded;charset=UTF-8");
+			OutputStreamWriter writer = new OutputStreamWriter(
+					connection.getOutputStream());
+			writer.write(urlParameters);
+			writer.flush();
+			String line, retJson = "";
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					connection.getInputStream()));
 
+			while ((line = reader.readLine()) != null) {
+				retJson += line;
+			}
+			writer.close();
+			reader.close();
+			JSONParser parser = new JSONParser();
+			Object obj = parser.parse(retJson);
+			JSONObject object = (JSONObject) obj;
+		   
+			/// result of request 
+			return object.get("requestResponse").toString();
+				
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "something wrong happend please check user controller send freind request function";
+	}
+	
+	/**
+	 * AddAllFriendRequests this method add all users those want to be 
+	 * friends with this user 
+	 * 
+	 * @return user in json format
+	 */
+	@POST
+	@Path("/addAllFriendRequests")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addAllFriendRequests(@FormParam("recevierEmail") String recevierEmail) {
+		String serviceUrl = "http://localhost:8888/rest/addAllFriendRequests";
+		try {
+			URL url = new URL(serviceUrl);
+			String urlParameters = "recevierEmail=" + recevierEmail;
+			HttpURLConnection connection = (HttpURLConnection) url
+					.openConnection();
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setInstanceFollowRedirects(false);
+			connection.setRequestMethod("POST");
+			connection.setConnectTimeout(60000);  //60 Seconds
+			connection.setReadTimeout(60000);  //60 Seconds
+			connection.setRequestProperty("Content-Type",
+					"application/x-www-form-urlencoded;charset=UTF-8");
+			OutputStreamWriter writer = new OutputStreamWriter(
+					connection.getOutputStream());
+			writer.write(urlParameters);
+			writer.flush();
+			String line, retJson = "";
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					connection.getInputStream()));
+
+			while ((line = reader.readLine()) != null) {
+				retJson += line;
+			}
+			writer.close();
+			reader.close();
+			JSONParser parser = new JSONParser();
+			Object obj = parser.parse(retJson);
+			JSONObject object = (JSONObject) obj;
+		   
+			/// result of request 
+			return object.get("requestResponse").toString();
+				
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "something wrong happend please check user controller add all friend requests function";
+	}
+	
+	
 
 }

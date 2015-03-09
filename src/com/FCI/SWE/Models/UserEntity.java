@@ -3,6 +3,10 @@ package com.FCI.SWE.Models;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -12,6 +16,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 
@@ -46,6 +51,12 @@ public class UserEntity {
 		this.password = password;
 
 	}
+	public UserEntity()
+	{
+		name= "";
+		email = "";
+		password = "";
+	}
 
 	public String getName() {
 		return name;
@@ -53,6 +64,9 @@ public class UserEntity {
 
 	public String getEmail() {
 		return email;
+	}
+	public void  setEmail(String email){
+		this.email = email ;
 	}
 
 	public String getPass() {
@@ -86,24 +100,24 @@ public class UserEntity {
 	/**
 	 * 
 	 * This static method will form UserEntity class using user name and
-	 * password This method will serach for user in datastore
+	 * password This method will search for user in datastore
 	 * 
-	 * @param name
-	 *            user name
+	 * @param email
+	 *            user email
 	 * @param pass
 	 *            user password
 	 * @return Constructed user entity
 	 */
 
-	public static UserEntity getUser(String name, String pass) {
+	public static UserEntity getUser(String email, String pass) {
 		DatastoreService datastore = DatastoreServiceFactory
 				.getDatastoreService();
 
 		Query gaeQuery = new Query("users");
 		PreparedQuery pq = datastore.prepare(gaeQuery);
 		for (Entity entity : pq.asIterable()) {
-			System.out.println(entity.getProperty("name").toString());
-			if (entity.getProperty("name").toString().equals(name)
+		///	System.out.println(entity.getProperty("email").toString());
+			if (entity.getProperty("email").toString().equals(email)
 					&& entity.getProperty("password").toString().equals(pass)) {
 				UserEntity returnedUser = new UserEntity(entity.getProperty(
 						"name").toString(), entity.getProperty("email")
@@ -114,7 +128,35 @@ public class UserEntity {
 
 		return null;
 	}
+	
+	/**
+	 * 
+	 * This  method if user email if found in datastore before 
+	 * 
+	 *           
+	 * @return true if found and false if not 
+	 */
+	
+	public boolean userEmailFound(String _email)
+	{
+		DatastoreService datastore = DatastoreServiceFactory
+				.getDatastoreService();
 
+		Query gaeQuery = new Query("users");
+		PreparedQuery pq = datastore.prepare(gaeQuery);
+		//iterat over all users
+		for (Entity entity : pq.asIterable()) {
+		
+			if (entity.getProperty("email").toString().equals(_email) ){
+					
+				return true ;
+			}
+		}
+		
+		return false ;
+	}
+
+	
 	/**
 	 * This method will be used to save user object in datastore
 	 * 
@@ -125,16 +167,111 @@ public class UserEntity {
 				.getDatastoreService();
 		Query gaeQuery = new Query("users");
 		PreparedQuery pq = datastore.prepare(gaeQuery);
+		
 		List<Entity> list = pq.asList(FetchOptions.Builder.withDefaults());
 
-		Entity employee = new Entity("users", list.size() + 1);
+		Entity employee = new Entity("users", list.size()+ 1);
 
 		employee.setProperty("name", this.name);
 		employee.setProperty("email", this.email);
 		employee.setProperty("password", this.password);
 		datastore.put(employee);
+        
+		return true;
+
+	}
+	
+	/**
+	 * 
+	 * This static method will check if 2 users are friends or not
+	 * password This method will search for user in datastore
+	 * 
+	 * @param senderEmail
+	 *            
+	 * @param receiverEmail
+	 *           
+	 * @return freiends or not
+	 */
+	public static boolean isFriends(String senderEmail , String recevierEmail){
+		DatastoreService datastore = DatastoreServiceFactory
+				.getDatastoreService();
+
+		Query gaeQuery = new Query("friends");
+		PreparedQuery pq = datastore.prepare(gaeQuery);
+		//iterat over all friends
+		for (Entity entity : pq.asIterable()) {
+		
+			if (entity.getProperty("senderEmail").toString().equals(recevierEmail) &&
+				entity.getProperty("recevierEmail").toString().equals(senderEmail) &&
+				entity.getProperty("status").toString().equals("YES")){
+					
+				return true ;
+			}
+			else if (entity.getProperty("senderEmail").toString().equals(senderEmail) &&
+					entity.getProperty("recevierEmail").toString().equals(recevierEmail) &&
+					entity.getProperty("status").toString().equals("YES")){
+						
+					return true ;
+			}
+		}
+		
+		return false ;
+	}
+	
+	public static boolean addFriendRequest(String senderEmail , String recevierEmail){
+		
+		DatastoreService datastore = DatastoreServiceFactory
+				.getDatastoreService();
+
+		Query gaeQuery = new Query("friends");
+		PreparedQuery pq = datastore.prepare(gaeQuery);
+		
+		List<Entity> list = pq.asList(FetchOptions.Builder.withDefaults());
+	
+		Entity newRequest = new Entity("friends",list.size()+1 );
+	
+
+		newRequest.setProperty("senderEmail", senderEmail);
+		newRequest.setProperty("recevierEmail", recevierEmail);
+		newRequest.setProperty("status", "NO");
+		datastore.put(newRequest);
+		
+		return true ;
+		
+	}
+	
+	
+	/**
+	 * AddAllFriendRequests this method add all users those want to be 
+	 * friends with this user 
+	 * 
+	 * @return user in json format
+	 */
+	@POST
+	@Path("/addAllFriendRequests")
+	public boolean addAllFriendRequests() {
+		
+		DatastoreService datastore = DatastoreServiceFactory
+				.getDatastoreService();
+
+		Query gaeQuery = new Query("friends");
+		PreparedQuery pq = datastore.prepare(gaeQuery);
+		//iterat over all friends
+		for (Entity entity : pq.asIterable()) {
+		
+			if ( entity.getProperty("recevierEmail").toString().equals(getEmail()) &&
+				entity.getProperty("status").toString().equals("NO")){
+					
+				entity.setProperty("status" , "YES");
+				datastore.put(entity);
+			}
+		}
+		
 
 		return true;
 
 	}
+
+	
+	
 }
