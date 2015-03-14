@@ -34,6 +34,7 @@ public class UserEntity {
 	private String name;
 	private String email;
 	private String password;
+	private int userId ;
 
 	/**
 	 * Constructor accepts user data
@@ -72,6 +73,56 @@ public class UserEntity {
 	public String getPass() {
 		return password;
 	}
+	
+	/**
+	 * 
+	 * This  method will return the last user id 
+	 *           
+	 * @return last user id
+	 */
+	public static int getLastUserID() {
+
+		DatastoreService datastore = DatastoreServiceFactory
+				.getDatastoreService();
+
+		Query gaeQuery = new Query("users");
+		PreparedQuery pq = datastore.prepare(gaeQuery);
+		//iterat over all users
+		int lastId = 1 ;
+		for (Entity entity : pq.asIterable()) {
+		
+			lastId = Integer.parseInt( entity.getProperty("userId").toString() );
+		}
+		
+		return lastId ;
+
+	}
+	
+	/**
+	 * 
+	 * This  method will return the last friendship id 
+	 *           
+	 * @return last friendship id
+	 */
+	public static  int getLastFriendshipID() {
+
+		DatastoreService datastore = DatastoreServiceFactory
+				.getDatastoreService();
+
+		Query gaeQuery = new Query("friends");
+		PreparedQuery pq = datastore.prepare(gaeQuery);
+		//iterat over all users
+		int lastId = 1 ;
+		for (Entity entity : pq.asIterable()) {
+		
+			lastId = Integer.parseInt( entity.getProperty("friendshipId").toString() );
+		}
+		
+		return lastId ;
+
+	}
+
+
 
 	/**
 	 * 
@@ -168,12 +219,13 @@ public class UserEntity {
 		Query gaeQuery = new Query("users");
 		PreparedQuery pq = datastore.prepare(gaeQuery);
 		
-		List<Entity> list = pq.asList(FetchOptions.Builder.withDefaults());
+		userId = getLastUserID() + 1 ;
 
-		Entity employee = new Entity("users", list.size()+ 1);
+		Entity employee = new Entity("users", userId);
 
 		employee.setProperty("name", this.name);
 		employee.setProperty("email", this.email);
+		employee.setProperty("userId", this.userId);
 		employee.setProperty("password", this.password);
 		datastore.put(employee);
         
@@ -226,13 +278,13 @@ public class UserEntity {
 		Query gaeQuery = new Query("friends");
 		PreparedQuery pq = datastore.prepare(gaeQuery);
 		
-		List<Entity> list = pq.asList(FetchOptions.Builder.withDefaults());
-	
-		Entity newRequest = new Entity("friends",list.size()+1 );
+	    int newFriendshipId = getLastFriendshipID() + 1 ;
+		Entity newRequest = new Entity("friends", newFriendshipId);
 	
 
 		newRequest.setProperty("senderEmail", senderEmail);
 		newRequest.setProperty("recevierEmail", recevierEmail);
+		newRequest.setProperty("friendshipId", newFriendshipId);
 		newRequest.setProperty("status", "NO");
 		datastore.put(newRequest);
 		
@@ -271,6 +323,8 @@ public class UserEntity {
 		return true;
 
 	}
+	
+
 
 	
 	
