@@ -120,7 +120,7 @@ public class Service {
 	 */
 	@POST
 	@Path("/SendFriendRequest")
-	public String sendFriendRequest(@FormParam("senderEmail") String senderEmail,
+	public String sendFriendRequestService(@FormParam("senderEmail") String senderEmail,
 			@FormParam("recevierEmail") String recevierEmail) {
 		
 		
@@ -166,7 +166,7 @@ public class Service {
 	 */
 	@POST
 	@Path("/addAllFriendRequests")
-	public String addAllFriendRequests( @FormParam("recevierEmail") String recevierEmail) {
+	public String addAllFriendRequestsService( @FormParam("recevierEmail") String recevierEmail) {
 		
 		JSONObject object = new JSONObject();
 		object.put("requestResponse", "Failed");
