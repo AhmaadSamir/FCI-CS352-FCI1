@@ -22,7 +22,7 @@
   <strong>Add all friends requests : </strong>  <input type="submit" value="Add all now">
   </form>
   <br>
-  <a href="http://localhost:8888/social/signup">signup</a> <br>
+  <a href="http://localhost:8888/social/">logout</a> <br>
   
 
 </body>
