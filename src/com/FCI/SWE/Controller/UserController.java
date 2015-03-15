@@ -94,7 +94,7 @@ public class UserController {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String response(@FormParam("uname") String uname,
 			@FormParam("email") String email, @FormParam("password") String pass) {
-		String serviceUrl = "http://localhost:8888/rest/RegistrationService";
+		String serviceUrl = "http://1-dot-aaaooosss111222333.appspot.com/rest/RegistrationService";
 		try {
 			URL url = new URL(serviceUrl);
 			String urlParameters = "uname=" + uname + "&email=" + email
@@ -160,7 +160,7 @@ public class UserController {
 	@Produces("text/html")
 	public Response home(@FormParam("email") String email,
 			@FormParam("password") String pass) {
-		String serviceUrl = "http://localhost:8888/rest/LoginService";
+		String serviceUrl = "http://1-dot-aaaooosss111222333.appspot.com/rest/LoginService";
 		try {
 			URL url = new URL(serviceUrl);
 			String urlParameters = "email=" + email + "&password=" + pass;
@@ -233,7 +233,7 @@ public class UserController {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String sendFriendRequest(@FormParam("senderEmail") String senderEmail,
 			@FormParam("recevierEmail") String recevierEmail) {
-		String serviceUrl = "http://localhost:8888/rest/SendFriendRequest";
+		String serviceUrl = "http://1-dot-aaaooosss111222333.appspot.com//rest/SendFriendRequest";
 		try {
 			URL url = new URL(serviceUrl);
 			String urlParameters = "senderEmail=" + senderEmail + "&recevierEmail=" + recevierEmail;
@@ -291,7 +291,7 @@ public class UserController {
 	@Path("/addAllFriendRequests")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String addAllFriendRequests(@FormParam("recevierEmail") String recevierEmail) {
-		String serviceUrl = "http://localhost:8888/rest/addAllFriendRequests";
+		String serviceUrl = "http://1-dot-aaaooosss111222333.appspot.com/rest/addAllFriendRequests";
 		try {
 			URL url = new URL(serviceUrl);
 			String urlParameters = "recevierEmail=" + recevierEmail;
