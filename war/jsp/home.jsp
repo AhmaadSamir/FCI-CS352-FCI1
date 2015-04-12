@@ -17,12 +17,21 @@
   
   
   
-  <form action="/social/addAllFriendRequests/" method="post">
+  <form action="/social/addAllFriendRequests" method="post">
   <input type="hidden" name="recevierEmail" value="${it.email}">
   <strong>Add all friends requests : </strong>  <input type="submit" value="Add all now">
   </form>
   <br>
-  <a href="http://localhost:8888/social/">logout</a> <br>
+  
+  <form action="/social/SendNewMessage" method="post">
+  Message : <input type="text" name="message" /> <br>
+  To : <input type="text" name="recevierEmail" /> <br>
+  <input type="hidden" name="senderEmail" value="${it.email}">
+  <input type="submit" value="send message">
+  </form>
+  
+    <br>
+  <a href="http://2-dot-aaaooosss111222333.appspot.com/social/">logout</a> <br>
   
 
 </body>

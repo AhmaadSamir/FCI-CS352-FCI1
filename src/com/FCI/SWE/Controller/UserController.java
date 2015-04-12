@@ -94,7 +94,7 @@ public class UserController {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String response(@FormParam("uname") String uname,
 			@FormParam("email") String email, @FormParam("password") String pass) {
-		String serviceUrl = "http://1-dot-aaaooosss111222333.appspot.com/rest/RegistrationService";
+		String serviceUrl = "http://2-dot-aaaooosss111222333.appspot.com/rest/RegistrationService";
 		try {
 			URL url = new URL(serviceUrl);
 			String urlParameters = "uname=" + uname + "&email=" + email
@@ -160,7 +160,7 @@ public class UserController {
 	@Produces("text/html")
 	public Response home(@FormParam("email") String email,
 			@FormParam("password") String pass) {
-		String serviceUrl = "http://1-dot-aaaooosss111222333.appspot.com/rest/LoginService";
+		String serviceUrl = "http://2-dot-aaaooosss111222333.appspot.com/rest/LoginService";
 		try {
 			URL url = new URL(serviceUrl);
 			String urlParameters = "email=" + email + "&password=" + pass;
@@ -233,7 +233,7 @@ public class UserController {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String sendFriendRequest(@FormParam("senderEmail") String senderEmail,
 			@FormParam("recevierEmail") String recevierEmail) {
-		String serviceUrl = "http://1-dot-aaaooosss111222333.appspot.com//rest/SendFriendRequest";
+		String serviceUrl = "http://2-dot-aaaooosss111222333.appspot.com/rest/SendFriendRequest";
 		try {
 			URL url = new URL(serviceUrl);
 			String urlParameters = "senderEmail=" + senderEmail + "&recevierEmail=" + recevierEmail;
@@ -291,7 +291,7 @@ public class UserController {
 	@Path("/addAllFriendRequests")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String addAllFriendRequests(@FormParam("recevierEmail") String recevierEmail) {
-		String serviceUrl = "http://1-dot-aaaooosss111222333.appspot.com/rest/addAllFriendRequests";
+		String serviceUrl = "http://2-dot-aaaooosss111222333.appspot.com/rest/addAllFriendRequests";
 		try {
 			URL url = new URL(serviceUrl);
 			String urlParameters = "recevierEmail=" + recevierEmail;
@@ -338,6 +338,61 @@ public class UserController {
 		
 		return "something wrong happend please check user controller add all friend requests function";
 	}
+
+	 @POST
+	 @Path("/SendNewMessage")
+	 @Produces(MediaType.TEXT_PLAIN)
+	 public String sendNewMessage(@FormParam("senderEmail") String senderEmail,
+	   @FormParam("recevierEmail") String recevierEmail , @FormParam("message") String message ) {
+	  String serviceUrl = "http://2-dot-aaaooosss111222333.appspot.com/rest/SendNewMessage";
+	  try {
+	   URL url = new URL(serviceUrl);
+	   String urlParameters = "senderEmail=" + senderEmail + "&recevierEmail=" + recevierEmail + "&message=" + message;
+	   HttpURLConnection connection = (HttpURLConnection) url
+	     .openConnection();
+	   connection.setDoOutput(true);
+	   connection.setDoInput(true);
+	   connection.setInstanceFollowRedirects(false);
+	   connection.setRequestMethod("POST");
+	   connection.setConnectTimeout(60000);  //60 Seconds
+	   connection.setReadTimeout(60000);  //60 Seconds
+	   connection.setRequestProperty("Content-Type",
+	     "application/x-www-form-urlencoded;charset=UTF-8");
+	   OutputStreamWriter writer = new OutputStreamWriter(
+	     connection.getOutputStream());
+	   writer.write(urlParameters);
+	   writer.flush();
+	   String line, retJson = "";
+	   BufferedReader reader = new BufferedReader(new InputStreamReader(
+	     connection.getInputStream()));
+
+	   while ((line = reader.readLine()) != null) {
+	    retJson += line;
+	   }
+	   	writer.close();
+		reader.close();
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(retJson);
+		JSONObject object = (JSONObject) obj;
+		
+
+	     
+	   /// result of request 
+	   return object.get("requestResponse").toString();
+	    
+	  } catch (MalformedURLException e) {
+	   // TODO Auto-generated catch block
+	   e.printStackTrace();
+	  } catch (IOException e) {
+	   // TODO Auto-generated catch block
+	   e.printStackTrace();
+	  } catch (ParseException e) {
+	   // TODO Auto-generated catch block
+	   e.printStackTrace();
+	  }
+	  
+	  return ("something wrong happend please check user controller send New Message  function" );
+	 }
 	
 	
 

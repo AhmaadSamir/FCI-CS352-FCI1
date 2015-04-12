@@ -162,12 +162,12 @@ public class Service {
 	 * AddAllFriendRequests this method add all users those want to be 
 	 * friends with this user 
 	 * 
-	 * @return user in json format
+	 * @return user in json format  
 	 */
 	@POST
 	@Path("/addAllFriendRequests")
 	public String addAllFriendRequestsService( @FormParam("recevierEmail") String recevierEmail) {
-		
+	
 		JSONObject object = new JSONObject();
 		object.put("requestResponse", "Failed");
 		UserEntity user = new UserEntity();
@@ -177,12 +177,57 @@ public class Service {
 			String requestResponse = "All users those sent you request became friends with you now\n"
 					+ " congrats ya user ya zeft 7abibi :D \n "
 					+ "in-shaa-el-Allah el phase gaya ha5alek te5tar el sadek ely enta bet7ebo  :DxD "; 
+			
+			
+			
 			object.put("requestResponse", requestResponse);
 		}
 		
 		return object.toString();
 
 	}
+	
+	@POST
+	 @Path("/SendNewMessage")
+	 public String sendNewMessageService(@FormParam("senderEmail") String senderEmail,
+	   @FormParam("recevierEmail") String recevierEmail , @FormParam("message") String message) {
+		
+		
+	  
+	  
+	  UserEntity user = new UserEntity();
+	  JSONObject object = new JSONObject();
+	  
+	  ///check if requered email is the user email
+	  if(senderEmail.equals(recevierEmail)){
+	   String requestResponse = "Request denied as you can`t send message to yourself ."; 
+	   object.put("requestResponse", requestResponse);
+	   return object.toString() ;
+	  }
+	  
+	  if(!user.userEmailFound(recevierEmail) ){
+	   String requestResponse = "Request denied as this user not found ."; 
+	   object.put("requestResponse", requestResponse);
+	   return object.toString() ;
+	  }
+	  
+	  /// check if they are friends 
+	  if( !user.isFriends( senderEmail ,  recevierEmail) ){
+	   String requestResponse = "Request denied as you are not friends"; 
+	   object.put("requestResponse", requestResponse);
+	   return object.toString() ;
+	  }
+	  
+	  
+	  /// put them in table friends with status = NO
+	 if( user.addMessage(senderEmail,recevierEmail,message));
+	  
+	  String requestResponse = "Request has been sent successfully"; 
+	  object.put("requestResponse", requestResponse);
+
+	  return object.toString();
+
+	 }
 
 
 }
