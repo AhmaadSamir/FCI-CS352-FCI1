@@ -199,7 +199,7 @@ public class UserEntity {
 		for (Entity entity : pq.asIterable()) {
 		
 			if (entity.getProperty("email").toString().equals(_email) ){
-					
+				System.out.print(entity.getProperty("email").toString() + "\n");
 				return true ;
 			}
 		}
@@ -299,8 +299,7 @@ public class UserEntity {
 	 * 
 	 * @return user in json format
 	 */
-	@POST
-	@Path("/addAllFriendRequests")
+	
 	public boolean addAllFriendRequests() {
 		
 		DatastoreService datastore = DatastoreServiceFactory
@@ -324,7 +323,64 @@ public class UserEntity {
 
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	 
+	public static  int getLastmessageId() {
 
+	 DatastoreService datastore = DatastoreServiceFactory
+	   .getDatastoreService();
+
+	 Query gaeQuery = new Query("message");
+	 PreparedQuery pq = datastore.prepare(gaeQuery);
+	 //iterat over all users
+	 int lastId = 1 ;
+	 for (Entity entity : pq.asIterable()) {
+	 
+	  lastId = Integer.parseInt( entity.getProperty("messageID").toString() );
+	 }
+	 
+	 return lastId ;
+
+	}
+	
+
+	
+	
+	/**
+	 * 
+	 * @param senderEmail
+	 * @param recevierEmail
+	 * @param message
+	 * @return
+	 */
+	
+	 
+	public static boolean addMessage(String senderEmail , String recevierEmail , String message){
+	  
+	  DatastoreService datastore = DatastoreServiceFactory
+	    .getDatastoreService();
+
+	  Query gaeQuery = new Query("message");
+	  PreparedQuery pq = datastore.prepare(gaeQuery);
+	  
+	     int newMessage = getLastmessageId() + 1 ;
+	  Entity newRequest = new Entity("message", newMessage);
+	 
+
+	  newRequest.setProperty("senderEmail", senderEmail);
+	  newRequest.setProperty("recevierEmail", recevierEmail);
+	  newRequest.setProperty("message", message);
+	  newRequest.setProperty("messageID", newMessage);
+	  datastore.put(newRequest);
+	  
+	  return true ;
+	  
+	 }
+	 
+	
 
 	
 	
