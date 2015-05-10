@@ -1,6 +1,7 @@
 package com.FCI.SWE.Services;
 
 import java.io.BufferedReader;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -25,7 +26,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.FCI.SWE.Models.Page;
+import com.FCI.SWE.Models.Post;
 import com.FCI.SWE.Models.UserEntity;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.search.query.ExpressionParser.negation_return;
+import com.google.appengine.labs.repackaged.org.json.JSONArray;
+
 
 /**
  * This class contains REST services, also contains action function for web
@@ -40,6 +47,9 @@ import com.FCI.SWE.Models.UserEntity;
 @Produces("text/html")
 public class Service {
 	
+	public Service(){
+		
+	}
 	
 	/*@GET
 	@Path("/index")
@@ -62,7 +72,7 @@ public class Service {
 	 */
 	@POST
 	@Path("/RegistrationService")
-	public String registrationService(@FormParam("uname") String uname,
+	public static String registrationService(@FormParam("uname") String uname,
 			@FormParam("email") String email, @FormParam("password") String pass) {
 		UserEntity user = new UserEntity(uname, email, pass);
 		
@@ -92,7 +102,7 @@ public class Service {
 	 */
 	@POST
 	@Path("/LoginService")
-	public String loginService(@FormParam("email") String email,
+	public static String loginService(@FormParam("email") String email,
 			@FormParam("password") String pass) {
 		JSONObject object = new JSONObject();
 		UserEntity user = UserEntity.getUser(email, pass);
@@ -107,6 +117,8 @@ public class Service {
 		}
 
 		return object.toString();
+		
+	
 
 	}
 	
@@ -120,7 +132,7 @@ public class Service {
 	 */
 	@POST
 	@Path("/SendFriendRequest")
-	public String sendFriendRequestService(@FormParam("senderEmail") String senderEmail,
+	public static String sendFriendRequestService(@FormParam("senderEmail") String senderEmail,
 			@FormParam("recevierEmail") String recevierEmail) {
 		
 		
@@ -166,7 +178,7 @@ public class Service {
 	 */
 	@POST
 	@Path("/addAllFriendRequests")
-	public String addAllFriendRequestsService( @FormParam("recevierEmail") String recevierEmail) {
+	public static String addAllFriendRequestsService( @FormParam("recevierEmail") String recevierEmail) {
 	
 		JSONObject object = new JSONObject();
 		object.put("requestResponse", "Failed");
@@ -189,7 +201,7 @@ public class Service {
 	
 	@POST
 	 @Path("/SendNewMessage")
-	 public String sendNewMessageService(@FormParam("senderEmail") String senderEmail,
+	 public static String sendNewMessageService(@FormParam("senderEmail") String senderEmail,
 	   @FormParam("recevierEmail") String recevierEmail , @FormParam("message") String message) {
 		
 		
@@ -224,10 +236,79 @@ public class Service {
 	  
 	  String requestResponse = "Request has been sent successfully"; 
 	  object.put("requestResponse", requestResponse);
+	  
 
 	  return object.toString();
+	
 
 	 }
+	
+	/***************************************** Timeline *************************************/
+	
+	/** 
+	 * don`t forgot to add hashtag part
+	 * 
+	 * @param ownerEmail
+	 * @param feeling
+	 * @param content
+	 * @param privacy
+	 * @param sharedFromEmail
+	 * @return
+	 */
+	@POST
+	 @Path("/CreatePost")
+	 public String createPostService(@FormParam("ownerEmail")  String ownerEmail ,
+			 				  @FormParam("feeling") String feeling , 
+			 				  @FormParam("content") String content,
+			 				  @FormParam("privacy") String privacy,
+			 				  @FormParam("sharedFromEmail") String sharedFromEmail) {
+		
+		Post post = new Post();
+		
+		post.setContent(content);
+		post.setFeeling(feeling);
+		post.setnLike(0);
+		post.setOwnerEmail(ownerEmail);
+		post.setSharedFromEmail(sharedFromEmail);
+		post.setPrivacy(privacy);
+		
+		///save first 
+		post.savePost();
+					
+		return showUserTimelineService(ownerEmail);
+		
+	}
+	/**
+	 * 
+	 * @param ownerEmail
+	 * @return
+	 */
+	 @POST
+	 @Path("/showUserTimeline")
+	 public String showUserTimelineService(@FormParam("ownerEmail") String ownerEmail) {
+		
+		Post post = new Post();		
+		ArrayList<Post> posts = post.getAllPosts(ownerEmail);
+		/// joson part
+		JSONArray userPosts = new JSONArray();
+		
+		for(Post p :posts){
+			JSONObject obj = new JSONObject();
+			obj.put("postId" , p.getPostId());
+			obj.put("ownerEmail" , p.getOwnerEmail());
+			obj.put("feeling" , p.getFeeling());
+			obj.put("privacy" , p.getPrivacy());
+			obj.put("content" , p.getContent());
+			obj.put("nLike" , p.getnLike());
+			obj.put("sharedFromEmail" , p.getSharedFromEmail());
+				
+			userPosts.put(obj.toJSONString());
+		}
+		
+		
+		return userPosts.toString();
+
+	}
 
 
 }
