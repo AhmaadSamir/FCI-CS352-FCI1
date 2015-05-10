@@ -13,7 +13,7 @@ public class Hashtag {
 	
 	private int hashtagId ;
 	private ArrayList<Post> posts ;
-	private String name;
+	private String name ;
 	
 	/**
 	 * 
@@ -102,11 +102,11 @@ public class Hashtag {
 		
 		this.hashtagId = getLastHashtagID() + 1 ;
 
-		Entity hashtag = new Entity("hashtagId", this.hashtagId);
+		Entity hashtag = new Entity("hashtag", this.hashtagId);
 
 		hashtag.setProperty("hashtagId", this.hashtagId);
 		hashtag.setProperty("name", this.name);
-		hashtag.setProperty("posts", this.posts);
+		hashtag.setProperty("posts", this.posts.toString());
 
 		
 		

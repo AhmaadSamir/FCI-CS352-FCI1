@@ -127,7 +127,7 @@ public class UserTimeline {
 		userTimeline.setProperty("userTimelineId", this.userTimelineId);
 		userTimeline.setProperty("name", this.name);
 		userTimeline.setProperty("ownerEmail", this.ownerEmail);
-		userTimeline.setProperty("posts", this.posts);
+		userTimeline.setProperty("posts", this.posts.toString());
 			
 		datastore.put(userTimeline);
         

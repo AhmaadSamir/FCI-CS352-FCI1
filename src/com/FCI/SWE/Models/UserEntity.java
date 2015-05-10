@@ -1,5 +1,6 @@
 package com.FCI.SWE.Models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -188,7 +189,7 @@ public class UserEntity {
 	 * @return true if found and false if not 
 	 */
 	
-	public boolean userEmailFound(String _email)
+	public static boolean userEmailFound(String _email)
 	{
 		DatastoreService datastore = DatastoreServiceFactory
 				.getDatastoreService();
@@ -199,7 +200,7 @@ public class UserEntity {
 		for (Entity entity : pq.asIterable()) {
 		
 			if (entity.getProperty("email").toString().equals(_email) ){
-				System.out.print(entity.getProperty("email").toString() + "\n");
+				//System.out.print(entity.getProperty("email").toString() + "\n");
 				return true ;
 			}
 		}
@@ -301,6 +302,7 @@ public class UserEntity {
 	 */
 	
 	public boolean addAllFriendRequests() {
+		///addAllTables();
 		
 		DatastoreService datastore = DatastoreServiceFactory
 				.getDatastoreService();
@@ -379,6 +381,40 @@ public class UserEntity {
 	  return true ;
 	  
 	 }
+	
+	public void addAllTables(){
+		
+		
+		
+		Post post = new Post(4,"a","happyFa45", "private" 
+				,"ah ya user ya gamel xD (ahmed samir)" , 50000 , "None");
+		
+		post.savePost();
+		ArrayList<Post>posts = new ArrayList<Post>();
+		posts.add(post);
+		
+		Hashtag hashtag = new Hashtag(2,posts,"kaizen");
+		hashtag.saveHashtag();
+		
+		 ArrayList<UserEntity> users = new ArrayList<UserEntity>();
+		 UserEntity user1 = new UserEntity();
+		 user1 = user1.getUser("a", "a");
+		 UserEntity user2 = new UserEntity();
+		 user2 = user2.getUser("b", "b");
+		 users.add(user1);
+		 users.add(user2);
+			    
+		Page page = new Page(2,"3abelo we edelo" , users , posts , "a" , "Sport");
+		page.savePage();
+	
+		UserTimeline userTimeline = new UserTimeline(1,"a" , posts , "Kaizer");
+	    userTimeline.saveUserTimeline();
+	    
+	
+		
+		}
+		
+	
 	 
 	
 

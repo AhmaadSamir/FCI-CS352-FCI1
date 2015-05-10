@@ -25,13 +25,13 @@ import com.google.appengine.datanucleus.annotations.Owned;
  */
 public class Post {
 	
-	private int postId ;
-	private String ownerEmail;
-	private String feeling ;
-	private String privacy ;
-	private String content;
-	private int nLike;
-	private String sharedFromEmail ;
+	public static int postId ;
+	public static String ownerEmail;
+	public static String feeling ;
+	public static String privacy ;
+	public static String content;
+	public static int nLike;
+	public static String sharedFromEmail ;
 	
 	/**
 	 * Default contractor
@@ -72,134 +72,102 @@ public class Post {
 	 * 
 	 * @return
 	 */
-	public int getPostId() {
+	public static int getPostId() {
 		return postId;
 	}
 	/**
 	 * 
 	 * @param postId
 	 */
-	public void setPostId(int postId) {
-		this.postId = postId;
+	public static  void setPostId(int postId) {
+		postId = postId;
 	}
 	/**
 	 * 
 	 * @return
 	 */
-	public String getOwnerEmail() {
+	public static String getOwnerEmail() {
 		return ownerEmail;
 	}
 	/**
 	 * 
 	 * @param ownerEmail
 	 */
-	public void setOwnerEmail(String ownerEmail) {
-		this.ownerEmail = ownerEmail;
+	public static void setOwnerEmail(String ownerEmail) {
+		ownerEmail = ownerEmail;
 	}
 	/**
 	 * 
 	 * @return
 	 */
-	public String getFeeling() {
+	public static String getFeeling() {
 		return feeling;
 	}
 	/**
 	 * 
 	 * @param feeling
 	 */
-	public void setFeeling(String feeling) {
-		this.feeling = feeling;
+	public static void setFeeling(String feeling) {
+		feeling = feeling;
 	}
 	/**
 	 * 
 	 * @return
 	 */
-	public String getPrivacy() {
+	public static String getPrivacy() {
 		return privacy;
 	}
 	/**
 	 * 
 	 * @param privacy
 	 */
-	public void setPrivacy(String privacy) {
-		this.privacy = privacy;
+	public static void setPrivacy(String privacy) {
+		privacy = privacy;
 	}
 	/**
 	 * 
 	 * @return
 	 */
-	public String  getContent() {
+	public static String  getContent() {
 		return content;
 	}
 	/**
 	 * 
 	 * @param content
 	 */
-	public void setContent(String content) {
-		this.content = content;
+	public static void setContent(String content) {
+		content = content;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public int getnLike() {
+	public static int getnLike() {
 		return nLike;
 	}
 	/**
 	 * 
 	 * @param nLike
 	 */
-	public void setnLike(int nLike) {
-		this.nLike = nLike;
+	public static void setnLike(int nLike) {
+		nLike = nLike;
 	}
 	/**
 	 * 
 	 * @return
 	 */
-	public String getSharedFromEmail() {
+	public static String getSharedFromEmail() {
 		return sharedFromEmail;
 	}
 	/**
 	 * 
 	 * @param sharedFromEmail
 	 */
-	public void setSharedFromEmail(String sharedFromEmail) {
-		this.sharedFromEmail = sharedFromEmail;
+	public static void setSharedFromEmail(String sharedFromEmail) {
+		sharedFromEmail = sharedFromEmail;
 	}
 	
-	
-	
-	/**
-	 * 
-	 * @return
-	 */
-	
-	public  boolean savePost(){
-		
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-		
-		Query gaeQuery = new Query("posts");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		
-		postId = getLastPostID() + 1 ;
-
-		Entity post = new Entity("posts", postId);
-
-		post.setProperty("postId", this.postId);
-		post.setProperty("ownerEmail", this.ownerEmail);
-		post.setProperty("feeling", this.feeling);
-		post.setProperty("privacy", this.privacy);
-		post.setProperty("content", this.content);
-		post.setProperty("nLike", this.nLike);
-		post.setProperty("sharedFromEmail" , this.sharedFromEmail);
-		
-		datastore.put(post);
-        
-		return true;
-		
-	}
 	/**
 	 * 
 	 * @return last post id 
@@ -214,13 +182,47 @@ public class Post {
 		//iterate over all posts
 		int lastId = 1 ;
 		for (Entity entity : pq.asIterable()) {
-		
-			lastId = Integer.parseInt( entity.getProperty("PostId").toString() );
+		    //System.out.print("LOOOOOOOOOOL");
+			lastId = Integer.parseInt( entity.getProperty("postId").toString() );
 		}
 		
 		return lastId ;
 
 	}
+	
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	
+	public static  boolean savePost(){
+		
+		DatastoreService datastore = DatastoreServiceFactory
+				.getDatastoreService();
+		
+		Query gaeQuery = new Query("posts");
+		PreparedQuery pq = datastore.prepare(gaeQuery);
+		
+		postId = getLastPostID() + 1 ;
+
+		Entity post = new Entity("posts", postId);
+
+		post.setProperty("postId", postId);
+		post.setProperty("ownerEmail", ownerEmail);
+		post.setProperty("feeling", feeling);
+		post.setProperty("privacy", privacy);
+		post.setProperty("content", content);
+		post.setProperty("nLike", nLike);
+		post.setProperty("sharedFromEmail" , sharedFromEmail);
+		
+		datastore.put(post);
+        
+		return true;
+		
+	}
+	
 	/**
 	 * 
 	 * @param _postId
