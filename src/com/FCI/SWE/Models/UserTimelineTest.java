@@ -7,12 +7,7 @@ import java.util.ArrayList;
 import org.testng.annotations.Test;
 
 public class UserTimelineTest {
-	/***  Passed ***/
-  @Test
-  public void foundUserTimeline() {
-	  assertEquals( UserTimeline.foundUserTimeline(2) , true);
-	  assertEquals( UserTimeline.foundUserTimeline(11) , false);
-  }
+
   /***  Failed ***/
   @Test
   public void getUserTimeline() {

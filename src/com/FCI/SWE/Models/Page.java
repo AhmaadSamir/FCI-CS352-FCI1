@@ -161,7 +161,7 @@ public class Page  {
 		Query gaeQuery = new Query("pages");
 		PreparedQuery pq = datastore.prepare(gaeQuery);
 		
-		pageId = getLastPageID() + 1 ;
+		pageId = DatabaseOperations.getLastId("pages", "pageId") + 1 ;
 
 		Entity page = new Entity("pages", pageId);
 
@@ -178,49 +178,8 @@ public class Page  {
 		return true;
 		
 	}
-	/**
-	 * 
-	 * @return last page id 
-	 */
-	public static int getLastPageID() {
-
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query gaeQuery = new Query("pages");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		//Iterate over all pages
-		int lastId = 1 ;
-		for (Entity entity : pq.asIterable()) {
-		
-			lastId = Integer.parseInt( entity.getProperty("PageId").toString() );
-		}
-		
-		return lastId ;
-
-	}
-	/**
-	 * 
-	 * @param _pageId
-	 * @return
-	 */
-	public static boolean foundPage(int _pageId)
-	{
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query gaeQuery = new Query("pages");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		//Iterate over all pages
-		for (Entity entity : pq.asIterable()) {
-		
-			if (entity.getProperty("pageId").toString().equals(_pageId) ){
-				return true ;
-			}
-		}
-		
-		return false ;
-	}
+	
+	
 	
 	/**
 	 * 

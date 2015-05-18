@@ -100,7 +100,7 @@ public class Hashtag {
 		Query gaeQuery = new Query("hashtag");
 		PreparedQuery pq = datastore.prepare(gaeQuery);
 		
-		this.hashtagId = getLastHashtagID() + 1 ;
+		this.hashtagId = DatabaseOperations.getLastId("hashtag", "hashtagId") + 1 ;
 
 		Entity hashtag = new Entity("hashtag", this.hashtagId);
 
@@ -114,49 +114,6 @@ public class Hashtag {
         
 		return true;
 		
-	}
-	/**
-	 * 
-	 * @return last hashtag id 
-	 */
-	public static int getLastHashtagID() {
-
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query gaeQuery = new Query("hashtag");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		//Iterate over all hashtages
-		int lastId = 1 ;
-		for (Entity entity : pq.asIterable()) {
-		
-			lastId = Integer.parseInt( entity.getProperty("hashtagId").toString() );
-		}
-		
-		return lastId ;
-
-	}
-	/**
-	 * 
-	 * @param _hashtagId
-	 * @return
-	 */
-	public static boolean foundHashtag(int _hashtagId){
-		
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query gaeQuery = new Query("hashtag");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		//Iterate over all hashtag
-		for (Entity entity : pq.asIterable()) {
-		
-			if (entity.getProperty("hashtagId").toString().equals(_hashtagId) ){
-				return true ;
-			}
-		}
-		
-		return false ;
 	}
 	
 	/**

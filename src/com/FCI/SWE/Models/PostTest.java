@@ -7,14 +7,7 @@ import javax.validation.constraints.AssertTrue;
 import org.testng.annotations.Test;
 
 public class PostTest {
-	/***  Passed ***/
-  @Test
-  public void foundPost() {
-	  
-	  assertEquals( Post.foundPost(2) , true);
-	  assertEquals( Post.foundPost(11) , false);
-    
-  }
+
   /***  Passed ***/
   @Test
   public void getAllPosts() {

@@ -168,28 +168,7 @@ public class Post {
 		sharedFromEmail = sharedFromEmail;
 	}
 	
-	/**
-	 * 
-	 * @return last post id 
-	 */
-	public static int getLastPostID() {
-
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query gaeQuery = new Query("posts");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		//iterate over all posts
-		int lastId = 1 ;
-		for (Entity entity : pq.asIterable()) {
-		    //System.out.print("LOOOOOOOOOOL");
-			lastId = Integer.parseInt( entity.getProperty("postId").toString() );
-		}
 		
-		return lastId ;
-
-	}
-	
 	
 	
 	/**
@@ -205,7 +184,7 @@ public class Post {
 		Query gaeQuery = new Query("posts");
 		PreparedQuery pq = datastore.prepare(gaeQuery);
 		
-		postId = getLastPostID() + 1 ;
+		postId = DatabaseOperations.getLastId("posts" ,"postId" ) + 1 ;
 
 		Entity post = new Entity("posts", postId);
 
@@ -223,28 +202,7 @@ public class Post {
 		
 	}
 	
-	/**
-	 * 
-	 * @param _postId
-	 * @return
-	 */
-	public static boolean foundPost(int _postId)
-	{
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query gaeQuery = new Query("posts");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		//iterat over all posts
-		for (Entity entity : pq.asIterable()) {
-		
-			if (entity.getProperty("postId").toString().equals(_postId) ){
-				return true ;
-			}
-		}
-		
-		return false ;
-	}
+	
 	
 	/**
 	 * 

@@ -13,13 +13,7 @@ public class HashtagTest {
 	  
   }
 
-  /***  Passed ***/
-  @Test
-  public void foundHashtag() {
-    ///	public static boolean foundHashtag(int _hashtagId){
-	  assertEquals( Hashtag.foundHashtag(2) , true);
-	  assertEquals( Hashtag.foundHashtag(11) , false);
-  }
+
   /***  Failed ***/
   @Test
   public void getHatshtag() {
@@ -32,13 +26,7 @@ public class HashtagTest {
 	  assertEquals( Hashtag.getHatshtag(11) , null);
     
   }
-  /***  Passed ***/
-  @Test
-  public void getLastHashtagID() {
-	  ///public static int getLastHashtagID() {
-	  assertEquals( Hashtag.getLastHashtagID() , 2); /// change number don`t forget
-    
-  }
+
   /***  Passed ***/
   @Test
   public void saveHashtag() {

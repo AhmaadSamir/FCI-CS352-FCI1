@@ -7,14 +7,7 @@ import java.util.ArrayList;
 import org.testng.annotations.Test;
 
 public class PageTest {
-	/***  Passed ***/
-  @Test
-  public void foundPage() {
-	  
-	  assertEquals( Page.foundPage(2) , true);
-	  assertEquals( Page.foundPage(11) , false);
-	  
-  }
+	
   /***  Failed ***/
   @Test
   public void getPage() {

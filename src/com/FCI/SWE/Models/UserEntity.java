@@ -75,55 +75,6 @@ public class UserEntity {
 		return password;
 	}
 	
-	/**
-	 * 
-	 * This  method will return the last user id 
-	 *           
-	 * @return last user id
-	 */
-	public static int getLastUserID() {
-
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query gaeQuery = new Query("users");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		//iterat over all users
-		int lastId = 1 ;
-		for (Entity entity : pq.asIterable()) {
-		
-			lastId = Integer.parseInt( entity.getProperty("userId").toString() );
-		}
-		
-		return lastId ;
-
-	}
-	
-	/**
-	 * 
-	 * This  method will return the last friendship id 
-	 *           
-	 * @return last friendship id
-	 */
-	public static  int getLastFriendshipID() {
-
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query gaeQuery = new Query("friends");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		//iterat over all users
-		int lastId = 1 ;
-		for (Entity entity : pq.asIterable()) {
-		
-			lastId = Integer.parseInt( entity.getProperty("friendshipId").toString() );
-		}
-		
-		return lastId ;
-
-	}
-
-
 
 	/**
 	 * 
@@ -181,33 +132,7 @@ public class UserEntity {
 		return null;
 	}
 	
-	/**
-	 * 
-	 * This  method if user email if found in datastore before 
-	 * 
-	 *           
-	 * @return true if found and false if not 
-	 */
 	
-	public static boolean userEmailFound(String _email)
-	{
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query gaeQuery = new Query("users");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		//iterat over all users
-		for (Entity entity : pq.asIterable()) {
-		
-			if (entity.getProperty("email").toString().equals(_email) ){
-				//System.out.print(entity.getProperty("email").toString() + "\n");
-				return true ;
-			}
-		}
-		
-		return false ;
-	}
-
 	
 	/**
 	 * This method will be used to save user object in datastore
@@ -220,7 +145,7 @@ public class UserEntity {
 		Query gaeQuery = new Query("users");
 		PreparedQuery pq = datastore.prepare(gaeQuery);
 		
-		userId = getLastUserID() + 1 ;
+		userId = DatabaseOperations.getLastId("users", "userId") + 1 ;
 
 		Entity employee = new Entity("users", userId);
 
@@ -279,7 +204,7 @@ public class UserEntity {
 		Query gaeQuery = new Query("friends");
 		PreparedQuery pq = datastore.prepare(gaeQuery);
 		
-	    int newFriendshipId = getLastFriendshipID() + 1 ;
+	    int newFriendshipId = DatabaseOperations.getLastId("friends" , "friendshipId") + 1 ;
 		Entity newRequest = new Entity("friends", newFriendshipId);
 	
 
@@ -325,30 +250,6 @@ public class UserEntity {
 
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	 
-	public static  int getLastmessageId() {
-
-	 DatastoreService datastore = DatastoreServiceFactory
-	   .getDatastoreService();
-
-	 Query gaeQuery = new Query("message");
-	 PreparedQuery pq = datastore.prepare(gaeQuery);
-	 //iterat over all users
-	 int lastId = 1 ;
-	 for (Entity entity : pq.asIterable()) {
-	 
-	  lastId = Integer.parseInt( entity.getProperty("messageID").toString() );
-	 }
-	 
-	 return lastId ;
-
-	}
-	
-
 	
 	
 	/**
@@ -368,7 +269,7 @@ public class UserEntity {
 	  Query gaeQuery = new Query("message");
 	  PreparedQuery pq = datastore.prepare(gaeQuery);
 	  
-	     int newMessage = getLastmessageId() + 1 ;
+	     int newMessage = DatabaseOperations.getLastId("message","messageID") + 1 ;
 	  Entity newRequest = new Entity("message", newMessage);
 	 
 

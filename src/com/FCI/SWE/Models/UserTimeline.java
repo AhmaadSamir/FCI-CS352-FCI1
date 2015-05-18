@@ -120,7 +120,7 @@ public class UserTimeline {
 		Query gaeQuery = new Query("userTimeline");
 		PreparedQuery pq = datastore.prepare(gaeQuery);
 		
-		userTimelineId = getLastUserTimelineID() + 1 ;
+		userTimelineId = DatabaseOperations.getLastId("userTimeline", "userTimelineId") + 1 ;
 
 		Entity userTimeline = new Entity("userTimeline", userTimelineId);	
 
@@ -134,49 +134,8 @@ public class UserTimeline {
 		return true;
 		
 	}
-	/**
-	 * 
-	 * @return last User Timeline id 
-	 */
-	public static int getLastUserTimelineID() {
+	
 
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query gaeQuery = new Query("userTimeline");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		//Iterate over all Users Timeline
-		int lastId = 1 ;
-		for (Entity entity : pq.asIterable()) {
-		
-			lastId = Integer.parseInt( entity.getProperty("userTimelineId").toString() );
-		}
-		
-		return lastId ;
-
-	}
-	/**
-	 * 
-	 * @param _userTimelineId
-	 * @return
-	 */
-	public static boolean foundUserTimeline(int _userTimelineId )
-	{
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
-
-		Query gaeQuery = new Query("userTimeline");
-		PreparedQuery pq = datastore.prepare(gaeQuery);
-		//Iterate over all Users Timelines
-		for (Entity entity : pq.asIterable()) {
-		
-			if (entity.getProperty("userTimeline").toString().equals(_userTimelineId) ){
-				return true ;
-			}
-		}
-		
-		return false ;
-	}
 	
 	/**
 	 * 
