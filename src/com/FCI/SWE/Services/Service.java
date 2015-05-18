@@ -1,7 +1,6 @@
 package com.FCI.SWE.Services;
 
 import java.io.BufferedReader;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -26,6 +25,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.FCI.SWE.Models.DatabaseOperations;
 import com.FCI.SWE.Models.Page;
 import com.FCI.SWE.Models.Post;
 import com.FCI.SWE.Models.UserEntity;
@@ -78,7 +78,7 @@ public class Service {
 		
 		
 		/// user email found 
-		if(user.userEmailFound(email)){
+		if( DatabaseOperations.isFound("users", "email", email)){
 			
 			JSONObject object = new JSONObject();
 			object.put("Status", "Failed");
@@ -146,7 +146,7 @@ public class Service {
 			return object.toString() ;
 		}
 		
-		if(!user.userEmailFound(recevierEmail) ){
+		if(! DatabaseOperations.isFound("users", "email", recevierEmail) ){
 			String requestResponse = "Request denied as this user not found ."; 
 			object.put("requestResponse", requestResponse);
 			return object.toString() ;
@@ -217,7 +217,7 @@ public class Service {
 	   return object.toString() ;
 	  }
 	  
-	  if(!user.userEmailFound(recevierEmail) ){
+	  if(! DatabaseOperations.isFound("users", "email", recevierEmail) ){
 	   String requestResponse = "Request denied as this user not found ."; 
 	   object.put("requestResponse", requestResponse);
 	   return object.toString() ;
